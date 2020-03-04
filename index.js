@@ -20,12 +20,17 @@ function setIcon(index, icon) {
 		setIcon(index, icon.iconFunction())
 	} else if (JSON.stringify(icon) != JSON.stringify(currentIcons[index])) {
 		currentIcons[index] = icon
-		setIconInternal(index, icon)
+		setIconInternal(index, icon).catch(reason => console.error("error: "+reason))
 	}
 }
 
 async function setIconInternal(index, icon) {
-	streamDeck.fillImage(index, await getIconBuffer(icon));
+	try {
+		streamDeck.fillImage(index, await getIconBuffer(icon));
+	} catch (error) {
+		console.error("error while drawing icon: "+error)
+		streamDeck.fillImage(index, {type: 'blank'});
+	}
 }
 
 async function getIconBuffer(icon) {
@@ -35,6 +40,7 @@ async function getIconBuffer(icon) {
 	    .raw() // Give us uncompressed RGB.
 	    .toBuffer()
 }
+
 async function getIconSharp(icon) {
 	if (icon.type === 'text') {
 		const pngBuffer = await sharp(text2png(icon.text, {
@@ -56,8 +62,7 @@ async function getIconSharp(icon) {
 	} if (icon.type === 'image') {
 		const filePath = path.resolve(__dirname, icon.relativePath)
 		if (! await fileExists(filePath)) {
-			console.log("iconimage not found: "+filePath)
-			return getSquareSharp(0, 0, 0)
+			throw new Error("iconimage not found: "+filePath)
 		}
 		return sharp(filePath)
 	} if (icon.type === 'square') {
@@ -109,7 +114,7 @@ streamDeck.on('down', keyIndex => {
 });
 
 streamDeck.on('error', error => {
-	console.error(error);
+	console.error("streamdeck error: "+error);
 });
 
 let currentPage = {
@@ -163,6 +168,8 @@ setInterval(() => redraw(), 500)
 module.exports = {
     addPage,
 	changePage,
+	//fadeIn,
 	getCurrentPageName: (() => currentPage.name),
 	MAX_KEYS: 32,
 }
+
