@@ -1,6 +1,6 @@
 {
   "name": "paged-stream-deck",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Use Elgato Stream Deck based on pages in Node.js",
   "main": "index.js",
   "scripts": {
@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/askeron/paged-stream-deck/issues"
   },
-  "homepage": "https://github.com/askeron/paged-stream-deck#readme"
+  "homepage": "https://github.com/askeron/paged-stream-deck#readme",
+  "dependencies": {
+    "elgato-stream-deck": "^3.3.0",
+    "sharp": "^0.24.1",
+    "text2png": "^2.1.0"
+  }
 }
