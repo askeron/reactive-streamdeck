@@ -60,7 +60,7 @@ async function getIconSharp(icon) {
 		// Seems like a bug in Sharp that we should make a test case for and report.
 		return sharp(pngBuffer)
 	} if (icon.type === 'image') {
-		const filePath = path.resolve(__dirname, icon.relativePath)
+		const filePath = path.resolve(process.cwd(), icon.relativePath)
 		if (! await fileExists(filePath)) {
 			throw new Error("iconimage not found: "+filePath)
 		}
