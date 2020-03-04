@@ -1,0 +1,22 @@
+{
+  "name": "paged-stream-deck",
+  "version": "0.0.1",
+  "description": "Use Elgato Stream Deck based on pages in Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/askeron/paged-stream-deck.git"
+  },
+  "keywords": [
+    "streamdeck"
+  ],
+  "author": "askeron",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/askeron/paged-stream-deck/issues"
+  },
+  "homepage": "https://github.com/askeron/paged-stream-deck#readme"
+}
