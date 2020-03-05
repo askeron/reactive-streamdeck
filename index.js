@@ -163,7 +163,7 @@ function addPage(page) {
 	pages.push(page)
 }
 
-setInterval(() => redraw(), 500)
+setInterval(() => redraw(), 200)
 
 module.exports = {
     addPage,
