@@ -1,6 +1,6 @@
 'use strict';
 
-const iconRenderer = require('icon-renderer.js')
+const iconRenderer = require('./icon-renderer.js')
 
 const StreamDeck = require('elgato-stream-deck')
 const streamDeck = StreamDeck.openStreamDeck()
@@ -21,10 +21,10 @@ function setIcon(index, icon) {
 
 async function setIconInternal(index, icon) {
 	try {
-		streamDeck.fillImage(index, await iconRenderer.getIconBuffer(icon));
+		streamDeck.fillImage(index, await iconRenderer.getIconBuffer(icon, streamDeck.ICON_SIZE));
 	} catch (error) {
 		console.error("error while drawing icon: "+error)
-		streamDeck.fillImage(index, await iconRenderer.getIconBufferBlank());
+		streamDeck.fillImage(index, await iconRenderer.getIconBufferBlank(streamDeck.ICON_SIZE));
 	}
 }
 

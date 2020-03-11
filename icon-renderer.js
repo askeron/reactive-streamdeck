@@ -7,15 +7,15 @@ const path = require('path')
 const sharp = require('sharp')
 const text2png = require('text2png')
 
-async function getIconBuffer(icon) {
-	return (await getIconSharp(icon))
+async function getIconBuffer(icon, iconsize) {
+	return (await getIconSharp(icon, iconsize))
 	    .flatten() // Eliminate alpha channel, if any.
-	    .resize(streamDeck.ICON_SIZE, streamDeck.ICON_SIZE) // Scale up/down to the right size, cropping if necessary.
+	    .resize(iconsize, iconsize) // Scale up/down to the right size, cropping if necessary.
 	    .raw() // Give us uncompressed RGB.
 	    .toBuffer()
 }
 
-async function getIconSharp(icon) {
+async function getIconSharp(icon, iconsize) {
 	if (icon.type === 'text') {
 		const pngBuffer = await sharp(text2png(icon.text, {
 			color: 'white',
@@ -23,7 +23,7 @@ async function getIconSharp(icon) {
 			padding: 14,
 			lineSpacing: 6
 		}))
-		.resize(streamDeck.ICON_SIZE, streamDeck.ICON_SIZE, {fit: "contain"})
+		.resize(iconsize, iconsize, {fit: "contain"})
 		.png()
 		.toBuffer();
 	
@@ -40,19 +40,19 @@ async function getIconSharp(icon) {
 		}
 		return sharp(filePath)
 	} if (icon.type === 'square') {
-		return getSquareSharp(icon.color.r, icon.color.g, icon.color.b)
+		return getSquareSharp(icon.color.r, icon.color.g, icon.color.b, iconsize)
 	} if (icon.type === 'blank') {
-		return getSquareSharp(0, 0, 0)
+		return getSquareSharp(0, 0, 0, iconsize)
 	} else {
 		throw new Error("illegal icon type: "+icon.type)
 	}
 }
 
-function getSquareSharp(r,g,b){
+function getSquareSharp(r,g,b, iconsize){
 	return sharp({
 		create: {
-			width: streamDeck.ICON_SIZE,
-			height: streamDeck.ICON_SIZE,
+			width: iconsize,
+			height: iconsize,
 			channels: 3,
 			background: { r, g, b }
 		}
@@ -70,5 +70,5 @@ async function fileExists(filePath) {
 
 module.exports = {
     getIconBuffer,
-    getIconBufferBlank: (async () => getIconBuffer({type: "blank"})),
+    getIconBufferBlank: (async (iconsize) => getIconBuffer({type: "blank"}, iconsize)),
 }
