@@ -5,6 +5,9 @@ const iconRenderer = require('./icon-renderer.js')
 const StreamDeck = require('elgato-stream-deck')
 const streamDeck = StreamDeck.openStreamDeck()
 
+const EventEmitter = require('events')
+const eventEmitter = new EventEmitter()
+
 const pages = [];
 
 const currentIcons = new Array(streamDeck.NUM_KEYS).map(x => {type:'blank'})
@@ -15,7 +18,7 @@ function setIcon(index, icon) {
 		setIcon(index, icon.iconFunction())
 	} else if (JSON.stringify(icon) != JSON.stringify(currentIcons[index])) {
 		currentIcons[index] = icon
-		setIconInternal(index, icon).catch(reason => console.error("error: "+reason))
+		setIconInternal(index, icon).catch(reason => eventEmitter.emit('error', new Error("error while setting icon: "+reason)))
 	}
 }
 
@@ -23,7 +26,7 @@ async function setIconInternal(index, icon) {
 	try {
 		streamDeck.fillImage(index, await iconRenderer.getIconBuffer(icon, streamDeck.ICON_SIZE));
 	} catch (error) {
-		console.error("error while drawing icon: "+error)
+        eventEmitter.emit('error', new Error("error while drawing icon: "+error))
 		streamDeck.fillImage(index, await iconRenderer.getIconBufferBlank(streamDeck.ICON_SIZE));
 	}
 }
@@ -50,7 +53,7 @@ streamDeck.on('down', keyIndex => {
 });
 
 streamDeck.on('error', error => {
-	console.error("streamdeck error: "+error);
+	eventEmitter.emit('error', error)
 });
 
 let currentPage = {
@@ -110,6 +113,7 @@ module.exports = {
 	unofficialApiUseAtYourOwnRisk: {
         streamDeck
     },
-	MAX_KEYS: 32,
+    MAX_KEYS: 32,
+    onError: ((listener) => eventEmitter.on('error', listener)),
 }
 
