@@ -10,7 +10,7 @@ const text2png = require('text2png')
 async function getIconBuffer(icon, iconsize) {
 	return (await getIconSharp(icon, iconsize))
 	    .flatten() // Eliminate alpha channel, if any.
-	    .resize(iconsize, iconsize) // Scale up/down to the right size, cropping if necessary.
+	    .resize(iconsize, iconsize, {fit: "contain"}) // Scale up/down to the right size, cropping if necessary.
 	    .raw() // Give us uncompressed RGB.
 	    .toBuffer()
 }
