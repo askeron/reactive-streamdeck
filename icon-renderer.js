@@ -21,7 +21,8 @@ async function getIconSharp(icon, iconsize) {
 			color: 'white',
 			backgroundColor: 'black',
 			padding: 14,
-			lineSpacing: 6
+			lineSpacing: 6,
+			textAlign: 'center'
 		}))
 		.resize(iconsize, iconsize, {fit: "contain"})
 		.png()
