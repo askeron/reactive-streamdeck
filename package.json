@@ -11,18 +11,12 @@
     "url": "git+https://github.com/askeron/paged-stream-deck.git"
   },
   "keywords": [
-    "streamdeck"
-    ,
-    "elgato"
-    ,
-    "stream"
-    ,
-    "deck"
-    ,
-    "paged"
-    ,
-    "usb"
-    ,
+    "streamdeck",
+    "elgato",
+    "stream",
+    "deck",
+    "paged",
+    "usb",
     "hid"
   ],
   "author": "askeron",
@@ -33,7 +27,7 @@
   "homepage": "https://github.com/askeron/paged-stream-deck#readme",
   "dependencies": {
     "elgato-stream-deck": "^3.3.0",
-    "sharp": "^0.24.1",
+    "sharp": "^0.25.2",
     "text2png": "^2.1.0"
   }
 }
