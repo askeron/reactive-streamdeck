@@ -108,6 +108,7 @@ module.exports = {
     addPage,
 	changePage,
 	//fadeIn,
+    getPageNames: (() => pages.map(x => x.name)),
     getCurrentPageName: (() => currentPage.name),
     setBrightness: ((percentage) => streamDeck.setBrightness(percentage)),
 	unofficialApiUseAtYourOwnRisk: {
