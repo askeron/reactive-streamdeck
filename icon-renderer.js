@@ -32,13 +32,13 @@ async function getIconSharp(icon, iconsize) {
 async function getTextSharp(icon, iconsize) {
 	return await correctAlphaChannel(sharp(text2png(icon.text, {
 		color: 'white',
-		//backgroundColor: 'black',
+		backgroundColor: icon.backgroundColor || 'black',
 		font: '20px sans-serif',
 		padding: 14,
 		lineSpacing: 6,
 		textAlign: 'center'
 	}))
-	.resize(iconsize, iconsize, {fit: "contain"})
+	.resize(iconsize, iconsize, {fit: "contain", background: icon.backgroundColor || 'black'})
 	)
 }
 
