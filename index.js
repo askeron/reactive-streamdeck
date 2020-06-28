@@ -8,8 +8,6 @@ const streamDeck = StreamDeck.openStreamDeck()
 const EventEmitter = require('events')
 const eventEmitter = new EventEmitter()
 
-const pages = [];
-
 const currentIcons = new Array(streamDeck.NUM_KEYS).map(x => {type:'blank'})
 streamDeck.clearAllKeys()
 
@@ -61,12 +59,8 @@ let currentPage = {
 	buttons: [],
 };
 
-function changePage(pageName) {
-	const pagesFiltered = pages.filter(x => x.name === pageName)
-	if (pagesFiltered.length === 0) {
-		throw new Error(`no page with name '${pageName}' found`)
-	}
-	currentPage = pagesFiltered[0]
+function showPage(page) {
+	currentPage = page
 	redraw()
 }
 
@@ -93,23 +87,12 @@ function fadeIn() {
 	}
 }
 
-function addPage(page) {
-	for (let x of pages) {
-		if (x.name === page.name) {
-			throw new Error(`could not add page because of duplicated name '${page.name}'`)
-		}
-	}
-	pages.push(page)
-}
-
 setInterval(() => redraw(), 200)
 
 module.exports = {
-    addPage,
-	changePage,
+	showPage,
 	//fadeIn,
-    getPageNames: (() => pages.map(x => x.name)),
-    getCurrentPageName: (() => currentPage.name),
+    getCurrentPage: (() => currentPage),
     setBrightness: ((percentage) => streamDeck.setBrightness(percentage)),
 	unofficialApiUseAtYourOwnRisk: {
         streamDeck
