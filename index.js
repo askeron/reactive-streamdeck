@@ -96,7 +96,8 @@ module.exports = {
     setBrightness: ((percentage) => streamDeck.setBrightness(percentage)),
 	unofficialApiUseAtYourOwnRisk: {
         streamDeck
-    },
+	},
+	NUM_KEYS: streamDeck.NUM_KEYS,
     MAX_KEYS: 32,
     onError: ((listener) => eventEmitter.on('error', listener)),
 }
