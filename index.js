@@ -104,12 +104,12 @@ module.exports = {
     getCurrentPage: (() => currentPage),
     setBrightness: ((percentage) => streamDeck.setBrightness(percentage)),
 	unofficialApiUseAtYourOwnRisk: {
-        streamDeck
+        streamDeck,
+		simulateKeyDown: (keyIndex) => streamDeck.emit("down", keyIndex),
+		simulateKeyUp: (keyIndex) => streamDeck.emit("up", keyIndex),
 	},
 	NUM_KEYS: streamDeck.NUM_KEYS,
     MAX_KEYS: 32,
 	onError: ((listener) => eventEmitter.on('error', listener)),
-	simulateKeyDown: (keyIndex) => streamDeck.emit("down", keyIndex),
-	simulateKeyUp: (keyIndex) => streamDeck.emit("up", keyIndex),
 }
 
