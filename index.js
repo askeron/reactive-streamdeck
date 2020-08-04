@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs')
+const sharp = require('sharp')
 const iconRenderer = require('./icon-renderer.js')
 
 const StreamDeck = require('elgato-stream-deck')
@@ -22,7 +24,14 @@ function setIcon(index, icon) {
 
 async function setIconInternal(index, icon) {
 	try {
-		streamDeck.fillImage(index, await iconRenderer.getIconBuffer(icon, streamDeck.ICON_SIZE));
+		const iconBuffer = await iconRenderer.getIconRawBuffer(icon, streamDeck.ICON_SIZE)
+		streamDeck.fillImage(index, iconBuffer);
+		/*
+		(await iconRenderer.getIconSharp(icon, streamDeck.ICON_SIZE)).toFile(`${index}.png`, (err, info) => {
+			if (err) throw err;
+			console.log('The file has been saved! '+info);
+		})
+		//*/
 	} catch (error) {
         eventEmitter.emit('error', new Error("error while drawing icon: "+error))
 		streamDeck.fillImage(index, await iconRenderer.getIconBufferBlank(streamDeck.ICON_SIZE));
@@ -99,6 +108,8 @@ module.exports = {
 	},
 	NUM_KEYS: streamDeck.NUM_KEYS,
     MAX_KEYS: 32,
-    onError: ((listener) => eventEmitter.on('error', listener)),
+	onError: ((listener) => eventEmitter.on('error', listener)),
+	simulateKeyDown: (keyIndex) => streamDeck.emit("down", keyIndex),
+	simulateKeyUp: (keyIndex) => streamDeck.emit("up", keyIndex),
 }
 

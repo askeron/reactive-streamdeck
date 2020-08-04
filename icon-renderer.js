@@ -7,15 +7,19 @@ const path = require('path')
 const sharp = require('sharp')
 const text2png = require('text2png')
 
-async function getIconBuffer(icon, iconsize) {
+async function getIconRawBuffer(icon, iconsize) {
 	return (await getIconSharp(icon, iconsize))
-	    .flatten() // Eliminate alpha channel, if any.
-	    .resize(iconsize, iconsize, {fit: "contain"}) // Scale up/down to the right size, cropping if necessary.
 	    .raw() // Give us uncompressed RGB.
 	    .toBuffer()
 }
 
 async function getIconSharp(icon, iconsize) {
+	return (await getIconSharpInternal(icon, iconsize))
+	    .flatten() // Eliminate alpha channel, if any.
+	    .resize(iconsize, iconsize, {fit: "contain"}) // Scale up/down to the right size, cropping if necessary.
+}
+
+async function getIconSharpInternal(icon, iconsize) {
 	if (icon.type === 'text') {
 		return await getTextSharp(icon, iconsize)
 	} if (icon.type === 'image') {
@@ -111,6 +115,7 @@ async function fileExists(filePath) {
 }
 
 module.exports = {
-    getIconBuffer,
+    getIconRawBuffer,
+    getIconSharp,
     getIconBufferBlank: (async (iconsize) => getIconBuffer({type: "blank"}, iconsize)),
 }
