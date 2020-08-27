@@ -11,7 +11,7 @@ const EventEmitter = require('events')
 const eventEmitter = new EventEmitter()
 
 const currentIcons = new Array(streamDeck.NUM_KEYS).map(x => {type:'blank'})
-const currentIconPngBuffers = currentIcons.map(x => new Buffer(0))
+const currentIconPngBuffers = currentIcons.map(x => Buffer.from("", "utf-8"))
 streamDeck.clearAllKeys()
 
 function setIcon(index, icon) {

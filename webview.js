@@ -62,8 +62,7 @@ module.exports = ({expressApp, getKeyRowCount, getKeyColumnCount, simulateKeyDow
         const iconBuffer = getCurrentIconPngBuffer(keyIndex)
     
         res.writeHead(200, {
-            'Content-Type': 'image/png',
-            'Content-Length': iconBuffer.length
+            'Content-Type': 'image/png'
         });
         res.end(iconBuffer); 
     })
