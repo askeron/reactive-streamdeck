@@ -37,7 +37,7 @@ module.exports = ({expressApp, getKeyRowCount, getKeyColumnCount, simulateKeyDow
                         }
                     }
                     function simulateClick(keyIndex) {
-                        fetch('http://localhost:4254/click?keyIndex='+keyIndex)
+                        fetch('/click?keyIndex='+keyIndex)
                         setTimeout(updateImages, 200);
                         setTimeout(updateImages, 500);
                     }
