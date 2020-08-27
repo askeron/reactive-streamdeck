@@ -11,6 +11,7 @@ const EventEmitter = require('events')
 const eventEmitter = new EventEmitter()
 
 const currentIcons = new Array(streamDeck.NUM_KEYS).map(x => {type:'blank'})
+const currentIconPngBuffers = currentIcons.map(x => new Buffer(0))
 streamDeck.clearAllKeys()
 
 function setIcon(index, icon) {
@@ -26,12 +27,7 @@ async function setIconInternal(index, icon) {
 	try {
 		const iconBuffer = await iconRenderer.getIconRawBuffer(icon, streamDeck.ICON_SIZE)
 		streamDeck.fillImage(index, iconBuffer);
-		/*
-		(await iconRenderer.getIconSharp(icon, streamDeck.ICON_SIZE)).toFile(`${index}.png`, (err, info) => {
-			if (err) throw err;
-			console.log('The file has been saved! '+info);
-		})
-		//*/
+		currentIconPngBuffers[index] = await (await iconRenderer.getIconSharp(icon, streamDeck.ICON_SIZE)).png().toBuffer()
 	} catch (error) {
         eventEmitter.emit('error', new Error("error while drawing icon: "+error))
 		streamDeck.fillImage(index, await iconRenderer.getIconBufferBlank(streamDeck.ICON_SIZE));
@@ -96,6 +92,43 @@ function fadeIn() {
 	}
 }
 
+function getKeyRowCount() {
+	if (streamDeck.NUM_KEYS == 6) {
+		return 2
+	}
+	if (streamDeck.NUM_KEYS == 15) {
+		return 3
+	}
+	if (streamDeck.NUM_KEYS == 32) {
+		return 4
+	}
+	throw "unknown streamdeck type"
+}
+
+function getKeyColumnCount() {
+	if (streamDeck.NUM_KEYS == 6) {
+		return 3
+	}
+	if (streamDeck.NUM_KEYS == 15) {
+		return 5
+	}
+	if (streamDeck.NUM_KEYS == 32) {
+		return 8
+	}
+	throw "unknown streamdeck type"
+}
+
+function registerExpressWebview(expressApp) {
+	require('./webview.js')({
+        expressApp,
+		simulateKeyDown: (keyIndex) => streamDeck.emit("down", keyIndex),
+		simulateKeyUp: (keyIndex) => streamDeck.emit("up", keyIndex),
+		getCurrentIconPngBuffer: (keyIndex) => currentIconPngBuffers[keyIndex],
+		getKeyRowCount,
+		getKeyColumnCount,
+	})
+}
+
 setInterval(() => redraw(), 200)
 
 module.exports = {
@@ -104,9 +137,8 @@ module.exports = {
     getCurrentPage: (() => currentPage),
     setBrightness: ((percentage) => streamDeck.setBrightness(percentage)),
 	unofficialApiUseAtYourOwnRisk: {
-        streamDeck,
-		simulateKeyDown: (keyIndex) => streamDeck.emit("down", keyIndex),
-		simulateKeyUp: (keyIndex) => streamDeck.emit("up", keyIndex),
+		streamDeck,
+		registerExpressWebview,
 	},
 	NUM_KEYS: streamDeck.NUM_KEYS,
     MAX_KEYS: 32,
