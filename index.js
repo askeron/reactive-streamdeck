@@ -1,7 +1,5 @@
 'use strict';
 
-const fs = require('fs')
-const sharp = require('sharp')
 const iconRenderer = require('./icon-renderer.js')
 
 const StreamDeck = require('elgato-stream-deck')
@@ -81,14 +79,6 @@ function redraw() {
 		} else {
 			setIcon(i,{type:"blank"})
 		}
-	}
-}
-
-function fadeIn() {
-	for (let i = 0; i <= 100; i+=1) {
-		setTimeout(function(percentage){
-			streamDeck.setBrightness(percentage);
-		},i*40,i);
 	}
 }
 

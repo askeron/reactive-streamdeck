@@ -2,7 +2,6 @@
 
 module.exports = ({expressApp, getKeyRowCount, getKeyColumnCount, simulateKeyDown, simulateKeyUp, getCurrentIconPngBuffer}) => {
     expressApp.get('/', function(req, res, next){
-        let i = 0
         const rows = getKeyRowCount()
         const columns = getKeyColumnCount()
         const keyCount = rows * columns
