@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/askeron/paged-stream-deck#readme",
   "dependencies": {
-    "elgato-stream-deck": "^3.3.0",
+    "elgato-stream-deck": "^4.0.1",
     "sharp": "^0.25.4",
     "text2png": "^2.1.0"
   },
