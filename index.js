@@ -124,7 +124,6 @@ setInterval(() => redraw(), 200)
 module.exports = {
 	showPage,
 	//fadeIn,
-    getCurrentPage: (() => currentPage),
     setBrightness: ((percentage) => streamDeck.setBrightness(percentage)),
 	unofficialApiUseAtYourOwnRisk: {
 		streamDeck,
