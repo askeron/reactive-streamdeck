@@ -1,30 +1,30 @@
 {
-  "name": "paged-stream-deck",
-  "version": "0.1.5",
-  "description": "Use Elgato Stream Deck based on pages in Node.js",
+  "name": "reactive-streamdeck",
+  "version": "0.1.6",
+  "description": "use Elgato Stream Deck reactively based on pages in Node.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/askeron/paged-stream-deck.git"
+    "url": "git+https://github.com/askeron/reactive-streamdeck.git"
   },
   "keywords": [
     "streamdeck",
     "elgato",
     "stream",
     "deck",
-    "paged",
+    "reactive",
     "usb",
     "hid"
   ],
   "author": "askeron",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/askeron/paged-stream-deck/issues"
+    "url": "https://github.com/askeron/reactive-streamdeck/issues"
   },
-  "homepage": "https://github.com/askeron/paged-stream-deck#readme",
+  "homepage": "https://github.com/askeron/reactive-streamdeck#readme",
   "dependencies": {
     "elgato-stream-deck": "^4.0.1",
     "sharp": "^0.25.4",
