@@ -1,6 +1,6 @@
 {
   "name": "reactive-streamdeck",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "use Elgato Stream Deck reactively based on pages in Node.js",
   "main": "index.js",
   "scripts": {

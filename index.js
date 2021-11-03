@@ -21,8 +21,10 @@ const EventEmitter = require('events')
 const eventEmitter = new EventEmitter()
 
 const currentIcons = new Array(NUM_KEYS).map(() => {})
-const currentIconPngBuffers = currentIcons.map(() => Buffer.from("", "utf-8"))
+const currentIconPngBuffers = new Array(NUM_KEYS).map(() => Buffer.from("", "utf-8"))
 streamDeck?.clearAllKeys()
+
+var webSocketServer
 
 function setIcon(index, icon) {
 	if (icon.type === "iconFunction") {
@@ -37,11 +39,33 @@ async function setIconInternal(index, icon) {
 	try {
 		const iconBuffer = await iconRenderer.getIconRawBuffer(icon, ICON_SIZE)
 		currentIconPngBuffers[index] = await (await iconRenderer.getIconSharp(icon, ICON_SIZE)).png().toBuffer()
+		sendIconOverWebSocket(index)
 		streamDeck?.fillImage(index, iconBuffer);
 	} catch (error) {
         eventEmitter.emit('error', new Error("error while drawing icon: "+error))
 		streamDeck?.fillImage(index, await iconRenderer.getIconBufferBlank(ICON_SIZE));
 	}
+}
+
+function sendAllIconsOverWebSocket() {
+	for (let i = 0; i < NUM_KEYS; i++) {
+		sendIconOverWebSocket(i)
+	}
+}
+
+function sendIconOverWebSocket(index) {
+	const message = JSON.stringify({
+		type: "icon",
+		index,
+		pngBase64: currentIconPngBuffers[index].toString('base64'), 
+	})
+	webSocketServer.clients.forEach(webSocket => {
+		try {
+			webSocket.send(message)
+		} catch(e) {
+			console.error("error while sending icon via websocket", e)
+		}
+	})
 }
 
 streamDeck?.on('up', keyIndex => {
@@ -128,7 +152,11 @@ function getKeyColumnCount() {
 	throw "unknown streamdeck type"
 }
 
-function registerExpressWebview(expressApp) {
+function setWebSocketServer(wss) {
+	webSocketServer = wss
+}
+
+function registerExpressWebview(expressApp, webSocketServer) {
 	require('./webview.js')({
         expressApp,
 		simulateKeyDown: (keyIndex) => onButtonDown(keyIndex),
@@ -136,6 +164,14 @@ function registerExpressWebview(expressApp) {
 		getCurrentIconPngBuffer: (keyIndex) => currentIconPngBuffers[keyIndex],
 		getKeyRowCount,
 		getKeyColumnCount,
+	})
+	setWebSocketServer(webSocketServer)
+	webSocketServer.on('connection', (webSocket) => {
+		webSocket.on('message', (message) => {
+			if (JSON.parse(message).type === "resend-all") {
+				sendAllIconsOverWebSocket()
+			}
+		})
 	})
 }
 

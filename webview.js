@@ -27,21 +27,25 @@ module.exports = ({expressApp, getKeyRowCount, getKeyColumnCount, simulateKeyDow
                 </style>
             </head>
             <body style="background-color: black;">
-            ${iconHtml}
-        
+                ${iconHtml}
                 <script>
-                    function updateImages() {
-                        for (let i = 0; i < ${keyCount}; i++) {
-                            document.getElementById("image"+i).src = "/getIcon?keyIndex="+i+"&time="+(new Date()/1);
-                        }
+                const ws = new WebSocket("ws://"+window.location.host+"/");
+                ws.onopen = function() {
+                    console.log('WebSocket Client Connected')
+                    ws.send('{"type": "resend-all"}')
+                }
+                ws.onmessage = function(e) {
+                    const message = JSON.parse(e.data)
+                    if (message.type === "icon") {
+                        document.getElementById("image"+message.index).src = "data:image/png;base64,"+message.pngBase64
                     }
+                }
+                </script>
+                <script>
                     function simulateClick(keyIndex) {
                         fetch('/click?keyIndex='+keyIndex)
-                        setTimeout(updateImages, 200);
-                        setTimeout(updateImages, 500);
                     }
                     updateImages()
-                    setInterval(updateImages, 5000);
                 </script>
             </body>
         </html>
