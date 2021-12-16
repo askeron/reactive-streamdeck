@@ -27,17 +27,32 @@ module.exports = ({expressApp, getKeyRowCount, getKeyColumnCount, simulateKeyDow
                 </style>
             </head>
             <body style="background-color: black;">
+                <div id="warning" style="text-align: center; background-color: red; display: none"><h1>connection lost</h1></div>
                 ${iconHtml}
                 <script>
-                const ws = new WebSocket("ws://"+window.location.host+"/");
+                const ws = new WebSocket("ws://"+window.location.host+"/")
+                let lastKeepAlive = Date.now()
                 ws.onopen = function() {
                     console.log('WebSocket Client Connected')
                     ws.send('{"type": "resend-all"}')
+                    setInterval(() => {
+                        if (lastKeepAlive + 60000 < Date.now()) {
+                            setTimeout(() => {
+                                document.getElementById("warning").style.display = "block"
+                            }, 2000)
+                            fetch('/isAlive')
+                                .then(() => location.reload())
+                                .catch(() => {})
+                        }
+                    }, 5000)
                 }
                 ws.onmessage = function(e) {
                     const message = JSON.parse(e.data)
                     if (message.type === "icon") {
                         document.getElementById("image"+message.index).src = "data:image/png;base64,"+message.pngBase64
+                    }
+                    if (message.type === "keepalive") {
+                        lastKeepAlive = Date.now()
                     }
                 }
                 </script>
@@ -45,7 +60,6 @@ module.exports = ({expressApp, getKeyRowCount, getKeyColumnCount, simulateKeyDow
                     function simulateClick(keyIndex) {
                         fetch('/click?keyIndex='+keyIndex)
                     }
-                    updateImages()
                 </script>
             </body>
         </html>
@@ -57,6 +71,10 @@ module.exports = ({expressApp, getKeyRowCount, getKeyColumnCount, simulateKeyDow
         simulateKeyDown(keyIndex)
         setTimeout(() => simulateKeyUp(keyIndex),50)
         
+        res.send('OK')
+    })
+    
+    expressApp.get('/isAlive', function(req, res, next) {
         res.send('OK')
     })
     
