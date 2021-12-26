@@ -54,16 +54,20 @@ function sendAllIconsOverWebSocket() {
 }
 
 function sendIconOverWebSocket(index) {
-	const message = JSON.stringify({
+	sendMessageOverWebSocket({
 		type: "icon",
 		index,
 		pngBase64: currentIconPngBuffers[index].toString('base64'), 
 	})
+}
+
+function sendMessageOverWebSocket(messageObject) {
+	const message = JSON.stringify(messageObject)
 	webSocketServer.clients.forEach(webSocket => {
 		try {
 			webSocket.send(message)
 		} catch(e) {
-			console.error("error while sending icon via websocket", e)
+			console.error("error while sending to all clients via websocket", e)
 		}
 	})
 }
@@ -166,6 +170,11 @@ function registerExpressWebview(expressApp, webSocketServer) {
 		getKeyColumnCount,
 	})
 	setWebSocketServer(webSocketServer)
+	setInterval(() => {
+		sendMessageOverWebSocket({
+			type: "keepalive",
+		})
+	}, 20000)
 	webSocketServer.on('connection', (webSocket) => {
 		webSocket.on('message', (message) => {
 			if (JSON.parse(message).type === "resend-all") {
