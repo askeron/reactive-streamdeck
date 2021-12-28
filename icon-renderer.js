@@ -73,7 +73,7 @@ async function getImageSharp(icon, iconsize) {
 				const height = bottom - top
 				const fullTransparentColor = {r:0,g:0,b:0,alpha:0}
 				const textPngBuffer = await(sharp(text2png(label.text, {
-						color: 'white',
+						color: label.color || 'white',
 						//backgroundColor: 'black',
 						font: '30px sans-serif',
 						padding: 0,
