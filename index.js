@@ -186,16 +186,38 @@ function registerExpressWebview(expressApp, webSocketServer) {
 
 setInterval(() => redraw(), 200)
 
-module.exports = {
+const reactiveStreamdeck = {
 	showPage,
-	//fadeIn,
     setBrightness: ((percentage) => streamDeck?.setBrightness(percentage)),
-	unofficialApiUseAtYourOwnRisk: {
+	unstableApiUseAtYourOwnRisk: {
 		streamDeck,
-		registerExpressWebview,
 	},
 	NUM_KEYS: NUM_KEYS,
     MAX_KEYS: 32,
 	onError: ((listener) => eventEmitter.on('error', listener)),
+	registerExpressWebview,
 }
 
+const pages = {}
+const pageStack = []
+const pagedStreamDeck = {
+	...reactiveStreamdeck,
+	addToPageStack: (name) => {
+		pageStack.push(name)
+	},
+	changePage: (name) => {
+		pageStack.push(name)
+		reactiveStreamdeck.showPage(pages[name])
+	},
+	getCurrentPageName: () => pageStack[pageStack.length-1],
+	getPageNames: () => Object.keys(pages),
+	addPage: page => pages[page.name] = page,
+	goBackToLastPage: () => {
+		pageStack.pop()
+		pagedStreamDeck.changePage(pageStack.pop())
+	},
+}
+
+reactiveStreamdeck.getPagedStreamdeck = () => pagedStreamDeck
+
+module.exports = reactiveStreamdeck
