@@ -20,8 +20,8 @@ const ICON_SIZE = streamDeck?.ICON_SIZE || 72
 const EventEmitter = require('events')
 const eventEmitter = new EventEmitter()
 
-const currentIcons = new Array(NUM_KEYS).map(() => {})
-const currentIconPngBuffers = new Array(NUM_KEYS).map(() => Buffer.from("", "utf-8"))
+const currentIcons = Array(NUM_KEYS).fill({})
+const currentIconPngBuffers = Array(NUM_KEYS).fill(Buffer.from("", "utf-8"))
 streamDeck?.clearAllKeys()
 
 var webSocketServer
