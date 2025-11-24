@@ -2,6 +2,7 @@
 
 module.exports = ({expressApp, getKeyRowCount, getKeyColumnCount, simulateKeyDown, simulateKeyUp, getCurrentIconPngBuffer}) => {
     expressApp.get('/', function(req, res, next){
+        const androidApp = req.query?.app === "android"
         const rows = getKeyRowCount()
         const columns = getKeyColumnCount()
         const keyCount = rows * columns
@@ -23,6 +24,7 @@ module.exports = ({expressApp, getKeyRowCount, getKeyColumnCount, simulateKeyDow
                     }
                     img {
                         padding: 3px 6px;
+                        ${androidApp ? "width: 108px; height 108px;" : "" /* is normally 72x72 px */}
                     }
                 </style>
             </head>
