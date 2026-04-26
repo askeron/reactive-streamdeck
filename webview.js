@@ -32,7 +32,8 @@ module.exports = ({expressApp, getKeyRowCount, getKeyColumnCount, simulateKeyDow
                 <div id="warning" style="text-align: center; background-color: red; display: none"><h1>connection lost</h1></div>
                 ${iconHtml}
                 <script>
-                const ws = new WebSocket("ws://"+window.location.host+"/")
+                const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+                const ws = new WebSocket(wsProtocol+window.location.host+"/")
                 let lastKeepAlive = Date.now()
                 ws.onopen = function() {
                     console.log('WebSocket Client Connected')
