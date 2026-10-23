@@ -5,7 +5,9 @@ const util = require('util')
 const path = require('path')
 
 const sharp = require('sharp')
-const text2png = require('text2png')
+// In the past I used here text2png but this has a dependency to the old Canvas 2. Therefore I took @igxjs/text2png which
+// is a fork but with canvas 3 as dependency. "require('text-svg').text2svg" (another fork) would work as well
+const text2png = require('@igxjs/text2png')
 
 async function getIconRawBuffer(icon, iconsize) {
 	return (await getIconSharp(icon, iconsize))
@@ -72,6 +74,7 @@ async function getImageSharp(icon, iconsize) {
 				const width = right - left
 				const height = bottom - top
 				const fullTransparentColor = {r:0,g:0,b:0,alpha:0}
+				const heightAndWidthHackForBlankStringsForCanvasLibVersion3 = (!label.text || !(label.text.trim())) ? 1 : undefined
 				const textPngBuffer = await(sharp(text2png(label.text, {
 						color: label.color || 'white',
 						//backgroundColor: 'black',
@@ -79,7 +82,9 @@ async function getImageSharp(icon, iconsize) {
 						font: '30px sans-serif',
 						padding: 0,
 						lineSpacing: 6,
-						textAlign: 'center'
+						textAlign: 'center',
+						height: heightAndWidthHackForBlankStringsForCanvasLibVersion3,
+						width: heightAndWidthHackForBlankStringsForCanvasLibVersion3,
 					}))
 					.resize(width, height, {
 						fit: "contain",

@@ -26,11 +26,17 @@
   },
   "homepage": "https://github.com/askeron/reactive-streamdeck#readme",
   "dependencies": {
+    "@igxjs/text2png": "^3.0.4",
+    "canvas": "^3.2.3",
+    "canvas-txt": "^5.0.2",
     "elgato-stream-deck": "^4.0.1",
-    "sharp": "^0.25.4",
-    "text2png": "^2.1.0"
+    "sharp": "^0.35.5"
   },
   "engines": {
     "node": ">= 10.0.0"
+  },
+  "allowScripts": {
+    "canvas@3.2.3": true,
+    "node-hid@2.2.0": true
   }
 }
